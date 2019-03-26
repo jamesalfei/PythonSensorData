@@ -1,7 +1,7 @@
+import requests
 import time
 from datetime import datetime
 from datetime import timedelta
-import requests
 
 ENABLE_TEXTS = False
 ENABLE_DB = False
@@ -29,9 +29,9 @@ print("Application started at " + str(timestamp))
 
 def should_trigger():
     if (accelerometer_reading_x > G_FORCE_UPPER_THRESHOLD or accelerometer_reading_x < G_FORCE_LOWER_THRESHOLD or
-            accelerometer_reading_y > G_FORCE_UPPER_THRESHOLD or accelerometer_reading_y < G_FORCE_LOWER_THRESHOLD or
-            gyroscopic_reading_x > GYRO_DEFAULT_X + GYRO_UPPER_THRESHOLD or gyroscopic_reading_x < GYRO_DEFAULT_X + GYRO_LOWER_THRESHOLD or
-            gyroscopic_reading_y > GYRO_DEFAULT_Y + GYRO_UPPER_THRESHOLD or gyroscopic_reading_y < GYRO_DEFAULT_Y + GYRO_LOWER_THRESHOLD):
+        accelerometer_reading_y > G_FORCE_UPPER_THRESHOLD or accelerometer_reading_y < G_FORCE_LOWER_THRESHOLD or
+        gyroscopic_reading_x > GYRO_DEFAULT_X + GYRO_UPPER_THRESHOLD or gyroscopic_reading_x < GYRO_DEFAULT_X + GYRO_LOWER_THRESHOLD or
+        gyroscopic_reading_y > GYRO_DEFAULT_Y + GYRO_UPPER_THRESHOLD or gyroscopic_reading_y < GYRO_DEFAULT_Y + GYRO_LOWER_THRESHOLD):
         return True
     return False
 
@@ -74,10 +74,10 @@ while True:
         # COMPARE READINGS AGAINST THRESHOLDS
         if should_trigger():
             print("Triggered")
+            # SEND MY TEXT HERE
             if datetime.now() > (timestamp + timedelta(seconds=TIME_THRESHOLD_IN_SECONDS)):
-                # Send my text here
                 timestamp = datetime.now()
-                print('Sending text')
+                print("Sending text")
 
                 if ENABLE_TEXTS:
                     r = requests.post(TOM_ENDPOINT, json=TOM_JSON)
@@ -85,7 +85,7 @@ while True:
             else:
                 print("NOT Sending text")
 
-        print('\n')
+        print("\n")
         time.sleep(1)
     except KeyboardInterrupt:
         break
