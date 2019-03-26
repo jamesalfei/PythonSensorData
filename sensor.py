@@ -1,19 +1,18 @@
 import requests
 import time
-import json
 import sys
+import time
 
-
-G_FORCE_UPPER_THRESHOLD =  0.14
+G_FORCE_UPPER_THRESHOLD = 0.14
 G_FORCE_LOWER_THRESHOLD = -0.14
 
-GYRO_UPPER_THRESHOLD =  20
+GYRO_UPPER_THRESHOLD = 20
 GYRO_LOWER_THRESHOLD = -20
 
 TOM_ENDPOINT = "https://justtrack-api.herokuapp.com/messenger/notify"
 TOM_JSON = {
-        "status-code": "1"
-    }
+    "status-code": "1"
+}
 
 ### POSTING TO TOM'S EVENT ENDPOINT ###
 # r = requests.post(TOM_ENDPOINT, json=TOM_JSON)
@@ -24,7 +23,8 @@ while True:
     try:
         # GET DATA
         with open("reading.json", "r") as f:
-            data = json.load(f)
+            data = requests.get("http://localhost:9054/data").json()
+            print(data)
             accelerometer_reading = float(data["accelerometer"]["x"])
             gyroscopic_reading = float(data["gyro"]["x"])
 
@@ -34,9 +34,9 @@ while True:
 
         # COMPARE READINGS AGAINST THRESHOLDS
         if (accelerometer_reading > G_FORCE_UPPER_THRESHOLD or
-            accelerometer_reading < G_FORCE_LOWER_THRESHOLD or
-            gyroscopic_reading > GYRO_UPPER_THRESHOLD or
-            gyroscopic_reading < GYRO_LOWER_THRESHOLD):
+                accelerometer_reading < G_FORCE_LOWER_THRESHOLD or
+                gyroscopic_reading > GYRO_UPPER_THRESHOLD or
+                gyroscopic_reading < GYRO_LOWER_THRESHOLD):
             print("Sending SMS: 'GRAND THEFT AUTO UNDERWAY!'")
             break
 
