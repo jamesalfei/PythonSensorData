@@ -1,5 +1,6 @@
 import requests
-import time
+from datetime import datetime
+from datetime import timedelta
 import sys
 import time
 
@@ -8,6 +9,9 @@ G_FORCE_LOWER_THRESHOLD = -0.14
 
 GYRO_UPPER_THRESHOLD = 20
 GYRO_LOWER_THRESHOLD = -20
+
+TIME_THRESHOLD_IN_SECONDS = 60
+timestamp = datetime.now() - timedelta(seconds=60)
 
 TOM_ENDPOINT = "https://justtrack-api.herokuapp.com/messenger/notify"
 TOM_JSON = {
@@ -18,29 +22,38 @@ TOM_JSON = {
 # r = requests.post(TOM_ENDPOINT, json=TOM_JSON)
 # print(r.status_code)
 
+print("Application started at " + str(timestamp))
+
 while True:
 
     try:
         # GET DATA
-        with open("reading.json", "r") as f:
-            data = requests.get("http://localhost:9054/data").json()
-            print(data)
-            accelerometer_reading = float(data["A_X"])
-            gyroscopic_reading = float(data["G_X"])
+        data = requests.get("http://localhost:9054/data").json()
+        accelerometer_reading_x = float(data["accelerometer"]["x"])
+        accelerometer_reading_y = float(data["accelerometer"]["y"])
+        gyroscopic_reading_x = float(data["gyro"]["x"])
+        gyroscopic_reading_y = float(data["gyro"]["y"])
 
         # SHOW DATA
-        print("Accelerometer X-Axis reading: " + str(round(accelerometer_reading, 2)))
-        print("Gyroscope X-Axis reading: " + str(round(gyroscopic_reading, 2)))
+        print("Accelerometer X-Axis reading: " + str(round(accelerometer_reading_x, 2)))
+        print("Accelerometer X-Axis reading: " + str(round(accelerometer_reading_y, 2)))
+        print("Gyroscope X-Axis reading: " + str(round(gyroscopic_reading_x, 2)))
+        print("Gyroscope X-Axis reading: " + str(round(gyroscopic_reading_y, 2)))
 
         # COMPARE READINGS AGAINST THRESHOLDS
-        if (accelerometer_reading > G_FORCE_UPPER_THRESHOLD or
-                accelerometer_reading < G_FORCE_LOWER_THRESHOLD or
-                gyroscopic_reading > GYRO_UPPER_THRESHOLD or
-                gyroscopic_reading < GYRO_LOWER_THRESHOLD):
-            print("Sending SMS: 'GRAND THEFT AUTO UNDERWAY!'")
-            break
+        if (accelerometer_reading_x > G_FORCE_UPPER_THRESHOLD or accelerometer_reading_x < G_FORCE_LOWER_THRESHOLD or
+                accelerometer_reading_y > G_FORCE_UPPER_THRESHOLD or accelerometer_reading_y < G_FORCE_LOWER_THRESHOLD or
+                gyroscopic_reading_x > GYRO_UPPER_THRESHOLD or gyroscopic_reading_x < GYRO_LOWER_THRESHOLD or
+                gyroscopic_reading_y > GYRO_UPPER_THRESHOLD or gyroscopic_reading_y < GYRO_LOWER_THRESHOLD):
+            print("Triggered")
+            if datetime.now() > (timestamp + timedelta(seconds=TIME_THRESHOLD_IN_SECONDS)):
+                #Send my text here
+                timestamp = datetime.now()
+                print('Sending text')
+            else:
+                print("NOT Sending text")
 
-        print("Sleeping...\n")
+        print('\n')
         time.sleep(1)
     except KeyboardInterrupt:
         sys.exit()
