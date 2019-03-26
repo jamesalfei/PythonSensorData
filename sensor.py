@@ -56,4 +56,21 @@ while True:
         print('\n')
         time.sleep(1)
     except KeyboardInterrupt:
-        sys.exit()
+        break
+
+new_data = {
+        "A_X": None,
+        "A_Y": None,
+        "A_Z": None,
+        "G_X": None,
+        "G_Y": None,
+        "G_Z": None
+}
+
+new_data["A_X"] = data["accelerometer"]["x"]
+new_data["A_Y"] = data["accelerometer"]["y"]
+new_data["A_Z"] = data["accelerometer"]["z"]
+new_data["G_X"] = data["gyro"]["x"]
+new_data["G_Y"] = data["gyro"]["y"]
+new_data["G_Z"] = data["gyro"]["z"]
+
