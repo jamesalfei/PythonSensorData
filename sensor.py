@@ -12,9 +12,6 @@ G_FORCE_LOWER_THRESHOLD = -0.14
 GYRO_UPPER_THRESHOLD = 20
 GYRO_LOWER_THRESHOLD = -20
 
-GYRO_DEFAULT_X = None
-GYRO_DEFAULT_Y = None
-
 TIME_THRESHOLD_IN_SECONDS = 60
 timestamp = datetime.now() - timedelta(seconds=60)
 
@@ -30,8 +27,8 @@ print("Application started at " + str(timestamp))
 def should_trigger():
     if (accelerometer_reading_x > G_FORCE_UPPER_THRESHOLD or accelerometer_reading_x < G_FORCE_LOWER_THRESHOLD or
         accelerometer_reading_y > G_FORCE_UPPER_THRESHOLD or accelerometer_reading_y < G_FORCE_LOWER_THRESHOLD or
-        gyroscopic_reading_x > GYRO_DEFAULT_X + GYRO_UPPER_THRESHOLD or gyroscopic_reading_x < GYRO_DEFAULT_X + GYRO_LOWER_THRESHOLD or
-        gyroscopic_reading_y > GYRO_DEFAULT_Y + GYRO_UPPER_THRESHOLD or gyroscopic_reading_y < GYRO_DEFAULT_Y + GYRO_LOWER_THRESHOLD):
+        gyroscopic_reading_x > GYRO_UPPER_THRESHOLD or gyroscopic_reading_x < GYRO_LOWER_THRESHOLD or
+        gyroscopic_reading_y > GYRO_UPPER_THRESHOLD or gyroscopic_reading_y < GYRO_LOWER_THRESHOLD):
         return True
     return False
 
@@ -45,12 +42,6 @@ while True:
         accelerometer_reading_y = float(data["accelerometer"]["y"])
         gyroscopic_reading_x = float(data["gyro"]["x"])
         gyroscopic_reading_y = float(data["gyro"]["y"])
-
-        if GYRO_DEFAULT_X is None:
-            GYRO_DEFAULT_X = gyroscopic_reading_x
-
-        if GYRO_DEFAULT_Y is None:
-                GYRO_DEFAULT_Y = gyroscopic_reading_y
 
         # SHOW DATA
         print("Accelerometer X-Axis reading: " + str(round(accelerometer_reading_x, 2)))
