@@ -18,6 +18,7 @@ TIME_THRESHOLD_IN_SECONDS = 60
 timestamp = datetime.now() - timedelta(seconds=60)
 
 TOM_ENDPOINT = "https://justtrack-api.herokuapp.com/messenger/notify"
+DEE_ENDPOINT = "https://justtrack-api.herokuapp.com/sensor/input"
 TOM_JSON = {
     "status-code": "1"
 }
@@ -67,6 +68,26 @@ while True:
                 # Send my text here
                 timestamp = datetime.now()
                 print('Sending text')
+
+                new_data = {
+                        "A_X": None,
+                        "A_Y": None,
+                        "A_Z": None,
+                        "G_X": None,
+                        "G_Y": None,
+                        "G_Z": None
+                }
+
+                new_data["A_X"] = data["accelerometer"]["x"]
+                new_data["A_Y"] = data["accelerometer"]["y"]
+                new_data["A_Z"] = data["accelerometer"]["z"]
+                new_data["G_X"] = data["gyro"]["x"]
+                new_data["G_Y"] = data["gyro"]["y"]
+                new_data["G_Z"] = data["gyro"]["z"]
+
+                print("Posting to Dhee's endpoint...")
+                r = requests.post(DEE_ENDPOINT, json=new_data)
+                print(r)
             else:
                 print("NOT Sending text")
 
@@ -74,20 +95,4 @@ while True:
         time.sleep(1)
     except KeyboardInterrupt:
         break
-
-new_data = {
-        "A_X": None,
-        "A_Y": None,
-        "A_Z": None,
-        "G_X": None,
-        "G_Y": None,
-        "G_Z": None
-}
-
-new_data["A_X"] = data["accelerometer"]["x"]
-new_data["A_Y"] = data["accelerometer"]["y"]
-new_data["A_Z"] = data["accelerometer"]["z"]
-new_data["G_X"] = data["gyro"]["x"]
-new_data["G_Y"] = data["gyro"]["y"]
-new_data["G_Z"] = data["gyro"]["z"]
 
