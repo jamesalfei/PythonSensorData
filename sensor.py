@@ -13,7 +13,7 @@ GYRO_UPPER_THRESHOLD = 20
 GYRO_LOWER_THRESHOLD = -20
 
 TIME_THRESHOLD_IN_SECONDS = 60
-timestamp = datetime.now() - timedelta(seconds=60)
+TIMESTAMP = datetime.now() - timedelta(seconds=60)
 
 TOM_ENDPOINT = "https://justtrack-api.herokuapp.com/messenger/notify"
 DEE_ENDPOINT = "https://justtrack-api.herokuapp.com/sensor/input"
@@ -21,14 +21,14 @@ TOM_JSON = {
     "status-code": "1"
 }
 
-print("Application started at " + str(timestamp))
+print("Application started at " + str(TIMESTAMP))
 
 
 def should_trigger():
     if (accelerometer_reading_x > G_FORCE_UPPER_THRESHOLD or accelerometer_reading_x < G_FORCE_LOWER_THRESHOLD or
-        accelerometer_reading_y > G_FORCE_UPPER_THRESHOLD or accelerometer_reading_y < G_FORCE_LOWER_THRESHOLD or
-        gyroscopic_reading_x > GYRO_UPPER_THRESHOLD or gyroscopic_reading_x < GYRO_LOWER_THRESHOLD or
-        gyroscopic_reading_y > GYRO_UPPER_THRESHOLD or gyroscopic_reading_y < GYRO_LOWER_THRESHOLD):
+            accelerometer_reading_y > G_FORCE_UPPER_THRESHOLD or accelerometer_reading_y < G_FORCE_LOWER_THRESHOLD or
+            gyroscopic_reading_x > GYRO_UPPER_THRESHOLD or gyroscopic_reading_x < GYRO_LOWER_THRESHOLD or
+            gyroscopic_reading_y > GYRO_UPPER_THRESHOLD or gyroscopic_reading_y < GYRO_LOWER_THRESHOLD):
         return True
     return False
 
@@ -66,8 +66,8 @@ while True:
         if should_trigger():
             print("Triggered")
             # SEND MY TEXT HERE
-            if datetime.now() > (timestamp + timedelta(seconds=TIME_THRESHOLD_IN_SECONDS)):
-                timestamp = datetime.now()
+            if datetime.now() > (TIMESTAMP + timedelta(seconds=TIME_THRESHOLD_IN_SECONDS)):
+                TIMESTAMP = datetime.now()
                 print("Sending text")
 
                 if ENABLE_TEXTS:
@@ -80,4 +80,3 @@ while True:
         time.sleep(1)
     except KeyboardInterrupt:
         break
-
