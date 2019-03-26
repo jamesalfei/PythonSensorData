@@ -25,8 +25,8 @@ while True:
         with open("reading.json", "r") as f:
             data = requests.get("http://localhost:9054/data").json()
             print(data)
-            accelerometer_reading = float(data["accelerometer"]["x"])
-            gyroscopic_reading = float(data["gyro"]["x"])
+            accelerometer_reading = float(data["A_X"])
+            gyroscopic_reading = float(data["G_X"])
 
         # SHOW DATA
         print("Accelerometer X-Axis reading: " + str(round(accelerometer_reading, 2)))
