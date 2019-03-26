@@ -1,9 +1,10 @@
-import sys
 import time
 from datetime import datetime
 from datetime import timedelta
-
 import requests
+
+ENABLE_TEXTS = False
+ENABLE_DB = False
 
 G_FORCE_UPPER_THRESHOLD = 0.14
 G_FORCE_LOWER_THRESHOLD = -0.14
@@ -22,10 +23,6 @@ DEE_ENDPOINT = "https://justtrack-api.herokuapp.com/sensor/input"
 TOM_JSON = {
     "status-code": "1"
 }
-
-### POSTING TO TOM'S EVENT ENDPOINT ###
-# r = requests.post(TOM_ENDPOINT, json=TOM_JSON)
-# print(r.status_code)
 
 print("Application started at " + str(timestamp))
 
@@ -61,6 +58,19 @@ while True:
         print("Gyroscope X-Axis reading: " + str(round(gyroscopic_reading_x, 2)))
         print("Gyroscope Y-Axis reading: " + str(round(gyroscopic_reading_y, 2)))
 
+        if ENABLE_DB:
+            # Persist data
+            new_data = {
+                "A_X": data["accelerometer"]["x"],
+                "A_Y": data["accelerometer"]["y"],
+                "A_Z": data["accelerometer"]["z"],
+                "G_X": data["gyro"]["x"],
+                "G_Y": data["gyro"]["y"],
+                "G_Z": data["gyro"]["z"]
+            }
+
+            r = requests.post(DEE_ENDPOINT, json=new_data)
+
         # COMPARE READINGS AGAINST THRESHOLDS
         if should_trigger():
             print("Triggered")
@@ -69,25 +79,9 @@ while True:
                 timestamp = datetime.now()
                 print('Sending text')
 
-                new_data = {
-                        "A_X": None,
-                        "A_Y": None,
-                        "A_Z": None,
-                        "G_X": None,
-                        "G_Y": None,
-                        "G_Z": None
-                }
-
-                new_data["A_X"] = data["accelerometer"]["x"]
-                new_data["A_Y"] = data["accelerometer"]["y"]
-                new_data["A_Z"] = data["accelerometer"]["z"]
-                new_data["G_X"] = data["gyro"]["x"]
-                new_data["G_Y"] = data["gyro"]["y"]
-                new_data["G_Z"] = data["gyro"]["z"]
-
-                print("Posting to Dhee's endpoint...")
-                r = requests.post(DEE_ENDPOINT, json=new_data)
-                print(r)
+                if ENABLE_TEXTS:
+                    r = requests.post(TOM_ENDPOINT, json=TOM_JSON)
+                    print(r.status_code)
             else:
                 print("NOT Sending text")
 
